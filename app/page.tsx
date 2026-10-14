@@ -1,69 +1,142 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import React, { useState } from 'react';
+import { COURSES } from '@/data/courses';
+import { Course, CourseCategory } from '@/types/course';
+import { PromoBanner } from '@/components/PromoBanner';
+import { Header } from '@/components/Header';
+import { Hero } from '@/components/Hero';
+import { TrustBar } from '@/components/TrustBar';
+import { Modalities } from '@/components/Modalities';
+import { CourseCatalog } from '@/components/CourseCatalog';
+import { CompetenceQuiz } from '@/components/CompetenceQuiz';
+import { SalaryRoiCalculator } from '@/components/SalaryRoiCalculator';
+import { AccreditationSection } from '@/components/AccreditationSection';
+import { PoloSection } from '@/components/PoloSection';
+import { Testimonials } from '@/components/Testimonials';
+import { LeadForm } from '@/components/LeadForm';
+import { FaqSection } from '@/components/FaqSection';
+import { Footer } from '@/components/Footer';
+import { CourseModal } from '@/components/CourseModal';
+import { CheckoutModal } from '@/components/CheckoutModal';
+import { WhatsAppFloat } from '@/components/WhatsAppFloat';
+import { LiveEnrollmentTicker } from '@/components/LiveEnrollmentTicker';
+
+export default function HomePage() {
+  const [activeCategory, setActiveCategory] = useState<CourseCategory>('todos');
+  const [selectedCourseForDetails, setSelectedCourseForDetails] = useState<Course | null>(null);
+  const [selectedCourseForCheckout, setSelectedCourseForCheckout] = useState<Course | null>(null);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [isCompetenceQuizOpen, setIsCompetenceQuizOpen] = useState(false);
+
+  const handleExploreCourses = () => {
+    const el = document.getElementById('catalogo-cursos');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleEnrollNow = (course: Course) => {
+    setSelectedCourseForCheckout(course);
+    setIsCheckoutOpen(true);
+  };
+
+  const handleSelectModality = (cat: string) => {
+    setActiveCategory(cat as CourseCategory);
+    const el = document.getElementById('catalogo-cursos');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleClaimDiscount = () => {
+    const el = document.getElementById('contato');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div className="min-h-screen flex flex-col bg-white selection:bg-blue-600 selection:text-white">
+      {/* 1. Urgency Top Discount Banner */}
+      <PromoBanner onClaimDiscount={handleClaimDiscount} />
+
+      {/* 2. Main Navigation Header */}
+      <Header 
+        onOpenLeadModal={handleClaimDiscount}
+        onFilterCategory={(cat) => handleSelectModality(cat)}
+      />
+
+      {/* 3. Hero Section with dynamic value proposition */}
+      <Hero 
+        onExploreCourses={handleExploreCourses}
+        onOpenCompetenceQuiz={() => setIsCompetenceQuizOpen(true)}
+      />
+
+      {/* 4. Trust Bar with 4 pillars and MEC statistics */}
+      <TrustBar />
+
+      {/* 5. 5 Modalities Showcase Cards */}
+      <Modalities 
+        onSelectModality={handleSelectModality}
+        onOpenCompetenceQuiz={() => setIsCompetenceQuizOpen(true)}
+      />
+
+      {/* 6. Inline Competence Simulator (Diploma in 48h) */}
+      <CompetenceQuiz isInline={true} />
+
+      {/* 7. Interactive Course Catalog with Filter & Search */}
+      <CourseCatalog 
+        courses={COURSES}
+        activeCategory={activeCategory}
+        onSelectCategory={(cat) => setActiveCategory(cat)}
+        onOpenCourseModal={(course) => setSelectedCourseForDetails(course)}
+        onEnrollNow={handleEnrollNow}
+      />
+
+      {/* 8. Conversion Enhancement: Interactive Salary & ROI Calculator */}
+      <SalaryRoiCalculator onExploreCourses={handleExploreCourses} />
+
+      {/* 9. Official Accreditation (SISTEC / MEC School Code 48643) */}
+      <AccreditationSection />
+
+      {/* 10. Regional Hub Section */}
+      <PoloSection onTalkToAdvisor={handleClaimDiscount} />
+
+      {/* 11. Student Testimonials & Social Proof */}
+      <Testimonials />
+
+      {/* 12. Lead Capture Form with Instant WhatsApp Conversion */}
+      <LeadForm />
+
+      {/* 13. Expandable FAQ Accordion */}
+      <FaqSection />
+
+      {/* 14. Deep Navy Modern Footer */}
+      <Footer />
+
+      {/* Interactive Modals */}
+      <CourseModal 
+        course={selectedCourseForDetails}
+        onClose={() => setSelectedCourseForDetails(null)}
+        onEnroll={(c) => {
+          setSelectedCourseForDetails(null);
+          handleEnrollNow(c);
+        }}
+      />
+
+      <CheckoutModal 
+        course={selectedCourseForCheckout}
+        isOpen={isCheckoutOpen}
+        onClose={() => setIsCheckoutOpen(false)}
+      />
+
+      {/* Standalone Competence Quiz Modal when triggered from header/hero buttons */}
+      <CompetenceQuiz 
+        isOpen={isCompetenceQuizOpen}
+        onClose={() => setIsCompetenceQuizOpen(false)}
+        isInline={false}
+      />
+
+      {/* Conversion Enhancement: Live Social Proof Ticker */}
+      <LiveEnrollmentTicker />
+
+      {/* Floating WhatsApp Quick Action Button */}
+      <WhatsAppFloat />
     </div>
   );
 }
